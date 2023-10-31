@@ -4,11 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grouped Data Median Calculator</title>
+    <title>Grouped Median Calculator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -18,91 +17,63 @@
 
         .container {
             text-align: center;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            color: #333;
-        }
-
-        label {
-            font-weight: bold;
-            display: block;
-            margin-top: 20px;
+            margin: 20px;
         }
 
         input[type="text"] {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin-top: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 8px;
+            margin: 8px;
+            width: 200px;
         }
 
         button {
-            background-color: #4caf50;
+            padding: 10px 20px;
+            background-color: #4CAF50;
             color: white;
             border: none;
-            padding: 12px 20px;
-            margin-top: 20px;
-            border-radius: 5px;
             cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        #result {
-            margin-top: 20px;
-            font-size: 1.2em;
-            color: #4caf50;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h1>Grouped Data Median Calculator</h1>
-        <label for="data">Enter Grouped Data (Format: value - frequency, e.g., 10 - 3, 15 - 2):</label>
-        <input type="text" id="data" placeholder="Enter grouped data">
+        <h2>Grouped Median Calculator</h2>
+        <div id="interval-container">
+            <label>Intervals:</label>
+            <input type="text" id="intervalsInput">
+        </div>
+        <div id="frequency-container">
+            <label>Frequencies:</label>
+            <input type="text" id="frequenciesInput">
+        </div>
         <button onclick="calculateMedian()">Calculate Median</button>
         <div id="result"></div>
     </div>
 
     <script>
         function calculateMedian() {
-            var input = document.getElementById("data").value;
-            var data = input.split(',').map(pair => pair.split('-').map(Number));
-            var flattenedData = [];
+            var intervals = document.getElementById("intervalsInput").value.split(",").map(Number);
+            var frequencies = document.getElementById("frequenciesInput").value.split(",").map(Number);
 
-            // Flatten the grouped data into a single array
-            data.forEach(pair => {
-                for (var i = 0; i < pair[1]; i++) {
-                    flattenedData.push(pair[0]);
+            var totalFrequency = frequencies.reduce((a, b) => a + b, 0);
+            var middleIndex = Math.floor(totalFrequency / 2);
+            var currentIndex = 0;
+
+            for (var i = 0; i < frequencies.length; i++) {
+                currentIndex += frequencies[i];
+                if (currentIndex >= middleIndex) {
+                    var median;
+                    if (totalFrequency % 2 === 0 && currentIndex === middleIndex) {
+                        median = (intervals[i] + intervals[i + 1]) / 2;
+                    } else {
+                        median = intervals[i];
+                    }
+                    var resultContainer = document.getElementById("result");
+                    resultContainer.innerHTML = "Median: " + median;
+                    return;
                 }
-            });
-
-            // Sort the data
-            flattenedData.sort(function (a, b) {
-                return a - b;
-            });
-
-            var median;
-            var middle = Math.floor(flattenedData.length / 2);
-
-            if (flattenedData.length % 2 === 0) {
-                // If the data has an even number of elements, average the middle two elements
-                median = (flattenedData[middle - 1] + flattenedData[middle]) / 2;
-            } else {
-                // If the data has an odd number of elements, the median is the middle element
-                median = flattenedData[middle];
             }
-
-            document.getElementById("result").textContent = "Median: " + median;
         }
     </script>
 </body>
