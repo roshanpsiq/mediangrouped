@@ -9,16 +9,17 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #f7f7f7;
-            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             margin: 0;
-            padding: 0;
         }
 
         .container {
-            max-width: 400px;
-            margin: 0 auto;
-            background-color: #ffffff;
+            text-align: center;
             padding: 20px;
+            background-color: #ffffff;
             border-radius: 10px;
             box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
         }
@@ -75,7 +76,33 @@
     <script>
         function calculateMedian() {
             var input = document.getElementById("data").value;
-            // ... (rest of the JavaScript code remains the same)
+            var data = input.split(',').map(pair => pair.split('-').map(Number));
+            var flattenedData = [];
+
+            // Flatten the grouped data into a single array
+            data.forEach(pair => {
+                for (var i = 0; i < pair[1]; i++) {
+                    flattenedData.push(pair[0]);
+                }
+            });
+
+            // Sort the data
+            flattenedData.sort(function (a, b) {
+                return a - b;
+            });
+
+            var median;
+            var middle = Math.floor(flattenedData.length / 2);
+
+            if (flattenedData.length % 2 === 0) {
+                // If the data has an even number of elements, average the middle two elements
+                median = (flattenedData[middle - 1] + flattenedData[middle]) / 2;
+            } else {
+                // If the data has an odd number of elements, the median is the middle element
+                median = flattenedData[middle];
+            }
+
+            document.getElementById("result").textContent = "Median: " + median;
         }
     </script>
 </body>
